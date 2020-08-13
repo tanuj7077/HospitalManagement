@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% block head %}
+
+<title>Patient-Medicines</title>
+{% endblock %}
+
+{% block body %}
+    {% if (patients) %}
+    <br>
+    <h1>Patient Information</h1>
+    <br>
+    <h5>Enter Patient's SSNID</h5>
+    <form action="/pharmacist" method='POST'>
+        <select name="ssnId"  class="selectpicker" data-live-search="true" data-size="5" data-width="80%" title="Search patient">
+            {% for patient in patients %}
+            <option value="{{patient.ssnId}}">{{patient.ssnId}}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <input  class="btn btn-primary mt-4" type="submit" value="Search" />
+        <!-- <a class="btn btn-success" href="/add_medicine">Add Medicine</a> -->
+        {% if (patient) %}
+        <div class="row align-items-center justify-content-around mx-0">
+            <div id="table" class="col-lg-12  px-4 py-4  order-1 order-lg-2">
+                    <table class="table">
+                        <thead class="thead-dark">
+                          <tr>
+                            <th scope="col">Patient Id</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Age</th>
+                            <th scope="col">Address</th>
+                            <th scope="col">DOJ</th>
+                            <th scope="col">Type of Room</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr>
+                                <td>{{patient.ssnId}}</td>
+                                <td>{{patient.name}}</td>
+                                <td>{{patient.age}}</td>
+                                <td>{{patient.address}}, {{patient.city}}, {{patient.state}}</td>
+                                <td>{{patient.admissionDate}}</td>
+                                <td>{{patient.bedType}}</td>
+                            </tr>
+
+                        </tbody>
+                      </table><br/>
+                      <div class="row align-items-center justify-content-around mx-0">
+                          {% if medicine %}
+                          <h4>Medicines Issued</h4>
+                          <div id="table" class="col-lg-12  px-4 py-4  order-1 order-lg-2">
+                                  <table class="table">
+                                      <thead class="thead-dark">
+                                        <tr>
+                                          <th scope="col">Medicine name</th>
+                                          <th scope="col">Medicine quantity</th>
+                                          <th scope="col">Medicine rate</th>
+                                          <th scope="col">Medicine amount</th>
+
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                          {% for m in medicine %}
+                                          <tr>
+                                              <td>{{ m['name'] }}</td>
+                                              <td>{{ m['quantity'] }}</td>
+                                              <td>{{ m['rate'] }}</td>
+                                              <td>{{ m['amount'] }}</td>
+
+                                          </tr>
+                                        {% endfor %}
+                                      </tbody>
+                                    </table>
+                              {% endif %}
+                              {% if not newMed%}
+                              <div class="row align-items-center justify-content-around mx-0">
+                              <a class="btn btn-success align-centre" href="/issuemedicine/{{ssn}}">Issue Medicine</a>
+                              </div>
+
+                           {% endif %}
+                          </div>
+                          {% if newMed %}
+                          <div id="table" class="col-lg-12  px-4 py-4  order-1 order-lg-2">
+                                  <table class="table">
+                                      <thead class="thead-dark">
+                                        <tr>
+                                          <th scope="col">Medicine name</th>
+                                          <th scope="col">Medicine quantity</th>
+                                          <th scope="col">Medicine rate</th>
+                                          <th scope="col">Medicine amount</th>
+                                          <th scope="col"><a class="btn btn-primary align-centre" href="/issuemedicine/{{ssn}}">+ Add</a></th>
+                                        </tr>
+                                      </thead>
+                                      <tbody>
+                                          {% for med in newMed %}
+                                          <tr>
+                                              <td>{{med['name']}}</td>
+                                              <td>{{med['quant']}}</td>
+                                              <td>{{med['rate']}}</td>
+                                              <td>{{med['amount']}}</td>
+                                              <td><a href="#"><span class="glyphicon glyphicon-remove"></span></a></td>
+                                          </tr>
+                                          {% endfor %}
+                                      </tbody>
+                                  </table>
+                          <div class="row align-items-center justify-content-around mx-0">
+                          <a class="btn btn-success" href="/updatelist/{{ssn}}">Update</a>
+                          </div>
+                          {% endif %}
+                          </div>
+
+            </div>
+        </div>
+        {% endif %}
+    </form>
+    {% else %}
+      <h4>No patient in your Hospital.</h4>
+      <a class="btn btn-success" href="/add_medicine">Add Medicine</a>
+    {% endif %}
+    <br>
+{% endblock %}

@@ -1,0 +1,119 @@
+{% extends 'base.html' %} {% block body %}
+{% block head %}
+
+<title>Diagnostic Info</title>
+{% endblock %}
+
+{% if (patients) %}
+<br />
+<h1>Patient Information</h1>
+<br />
+<h5>Enter Patient's SSNID</h5>
+<form action="/diagnostic" method="POST">
+  <select
+    name="ssnId"
+    class="selectpicker"
+    data-live-search="true"
+    data-size="5"
+    data-width="80%"
+    title="Search patient"
+  >
+    {% for patient in patients %}
+    <option value="{{patient.ssnId}}">{{patient.ssnId}}</option>
+    {% endfor %}
+  </select>
+  <br />
+  <input class="btn btn-primary mt-4" type="submit" value="Search" />
+  {% if (patient) %}
+  <div class="row align-items-center justify-content-around mx-0">
+    <div id="table" class="col-lg-12 px-4 py-4 order-1 order-lg-2">
+      <table class="table">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">Patient Id</th>
+            <th scope="col">Name</th>
+            <th scope="col">Age</th>
+            <th scope="col">Address</th>
+            <th scope="col">DOJ</th>
+            <th scope="col">Type of Room</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{patient.ssnId}}</td>
+            <td>{{patient.name}}</td>
+            <td>{{patient.age}}</td>
+            <td>{{patient.address}}, {{patient.city}}, {{patient.state}}</td>
+            <td>{{patient.admissionDate}}</td>
+            <td>{{patient.bedType}}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="row align-items-center justify-content-around mx-0">
+        {% if diagnosis %}
+        <h2>Diagnostics conducted</h2>
+        <div id="table" class="col-lg-12 px-4 py-4 order-1 order-lg-2">
+          <table class="table">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col">Name of the test</th>
+                <th scope="col">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for test in diagnosis %}
+                {% for t,r in test.items() %}
+              <tr>
+                <td>{{t}}</td>
+                <td>{{r}}</td>
+              </tr>
+              {% endfor %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div> <!-- Table div ends here -->
+        {% endif %}
+      </div>  <!-- Row Align div ends here -->
+      <div class="row align-items-center justify-content-around mx-0">
+        <a class="btn btn-success" href="/issuetest/{{patient.ssnId}}">Add Diagnostics</a>
+        <div id="table" class="col-lg-12 px-4 py-4 order-1 order-lg-2">
+          {% if dTestList %}
+          <table class="table">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col">Name of the test</th>
+                <th scope="col">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- to display data according to the availablility of diagnosticTests -->
+
+               {% for test in dTestList %}
+              <tr>
+                <td>{{test['name']}}</td>
+                <td>{{test['rate']}}</td>
+              </tr>
+              {% endfor %}
+
+            </tbody>
+          </table>
+          <div class="row align-items-center justify-content-around mx-0">
+          <a class="btn btn-success" href="/updatetest/{{ssn}}">Update</a>
+            </div>
+              {% endif %}
+        </div> <!-- Table div ends here -->
+      </div> <!-- Row Align div ends here -->
+    </div>
+  </div>
+  <div class="row align-items-center justify-content-around mx-0">
+  </div>
+  {% endif %}
+</form>
+{% else %}
+      <h4>No patient in your Hospital.</h4>
+      <a class="btn btn-success" href="/add_medicine">Add Medicine</a>
+{% endif %}
+<br />
+
+{% endblock %}
